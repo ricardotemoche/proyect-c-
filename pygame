@@ -2,7 +2,9 @@ import pygame
 import sys
 import time
 from pygame.locals import *
+import random
 from random import randint
+
 
 class Casilleros_Empresas(object):
     def __init__(self,nombre,posicion,estado,costo,renta):
@@ -128,12 +130,17 @@ def inicio():
     pieza_1 = pygame.image.load("Mesa/carro.png")
     pieza_2 = pygame.image.load("Mesa/barco.png")
 
+    computador="Computadora"
+
     menu = True
     menu_2 = False
+    menu_2_computador=False
+    menu_game_over=False
 
     interfaz_general = False
     interfaz_usuario1 = False
     interfaz_usuario2 = False
+    interfaz_computador= False
 
     dinamica_1 = False
     dinamica_2 = False
@@ -161,6 +168,8 @@ def inicio():
     mensaje_usuario1="- Lanza el dado una vez (X)"
     mensaje_usuario2="- Lanza el dado una vez (X)"
 
+    opcion=["Si","No"]
+
 
     dado_1=True
     dado_2=True
@@ -168,7 +177,7 @@ def inicio():
     bucle_1 = True
     bucle_2 = True
 
-
+    mini_bucle=True
     while True:
 
         while menu:
@@ -176,39 +185,83 @@ def inicio():
             ventana.fill(verde)
 
             mensajes_mostrar("Bienvenido a Monopolio 1.0",negro,fuente_menu,20,150)
-            mensajes_mostrar("Modalidad *** Jugador vs Jugador ***",negro,fuente_menu,20,200)
-            mensajes_mostrar("Presione la tecla espacio para elegir el turno", negro,fuente_menu, 20, 250)
+            mensajes_mostrar("Presiona '1' para jugar 1vs1",negro,fuente_menu,20,200)
+            mensajes_mostrar("Presiona '2' para jugar contra la computadora", negro, fuente_menu, 20, 250)
+            mensajes_mostrar("Luego presione la tecla espacio para elegir", negro, fuente_menu, 20,400)
+            mensajes_mostrar("el turno", negro, fuente_menu, 20, 440)
+
+
 
             for evento_1 in pygame.event.get():
                 if evento_1.type == QUIT:
                     pygame.quit()
                     sys.exit()
                 elif evento_1.type == pygame.KEYDOWN:
-                    if evento_1.key==pygame.K_SPACE:
-                        print("Bienvenido a Monopolio 1.0")
-                        print("Modalidad ***Jugador vs Jugador***")
-                        usuario1 = input("Nombre del jugador N°1: ")
-                        usuario2 = input("Nombre del jugador N°2: ")
-                        print()
-                        entrada = input("Elección de turnos. Presione enter")
-                        print()
-                        print("Espere ...")
-                        print("loading ...")
-                        print()
-                        if entrada == entrada:
-                            primerito = jugada(usuario1, usuario2)
-                            menu=False
-                            menu_2=True
-                            if primerito != usuario1:
-                                aux=usuario1
-                                usuario1=primerito
-                                usuario2=aux
-                            else:
-                                continue
+                    if evento_1.key==pygame.K_1:
+                        while mini_bucle:
+
+                            for evento in pygame.event.get():
+                                if evento.type == QUIT:
+                                    pygame.quit()
+                                    sys.exit()
+                                elif evento.type == pygame.KEYDOWN:
+                                    if evento.key == pygame.K_SPACE:
+                                        print("Bienvenido a Monopolio 1.0")
+                                        print("Modalidad ***Jugador vs Jugador***")
+                                        usuario1 = input("Nombre del jugador N°1: ")
+                                        usuario2 = input("Nombre del jugador N°2: ")
+                                        print()
+                                        entrada = input("Elección de turnos. Presione enter")
+                                        print()
+                                        print("Espere ...")
+                                        print("loading ...")
+                                        print()
+                                        if entrada == entrada:
+                                            primerito = jugada(usuario1, usuario2)
+                                            menu=False
+                                            mini_bucle=False
+                                            menu_2=True
+
+                                            if primerito != usuario1:
+                                                aux=usuario1
+                                                usuario1=primerito
+                                                usuario2=aux
+                                            else:
+                                                continue
+                            pygame.display.update()
+                    elif evento_1.key==pygame.K_2:
+                        while mini_bucle:
+
+                            for evento in pygame.event.get():
+                                if evento.type == QUIT:
+                                    pygame.quit()
+                                    sys.exit()
+                                elif evento.type == pygame.KEYDOWN:
+                                    if evento.key == pygame.K_SPACE:
+                                        print("Bienvenido a Monopolio 1.0")
+                                        print("Modalidad ***Jugador vs Computadora***")
+                                        usuario1 = input("Nombre del jugador N°1: ")
+                                        usuario2 = computador
+                                        print()
+                                        entrada = input("Elección de turnos. Presione enter")
+                                        print()
+                                        print("Espere ...")
+                                        print("loading ...")
+                                        print()
+                                        if entrada == entrada:
+
+                                            menu = False
+                                            mini_bucle = False
+                                            menu_2_computador = True
+
+
+
 
             pygame.display.update()
 
         while menu_2:
+
+
             ventana.fill(verde)
 
             mensajes_mostrar("Bienvenido a Monopolio 1.0", negro,fuente_menu, 20, 150)
@@ -228,7 +281,27 @@ def inicio():
                         interfaz_general=True
 
             pygame.display.update()
+        while menu_2_computador:
 
+            ventana.fill(verde)
+
+            mensajes_mostrar("Bienvenido a Monopolio 1.0", negro, fuente_menu, 20, 150)
+            mensajes_mostrar("Modalidad *** Jugador vs Computadora ***", negro, fuente_menu, 20, 200)
+            mensajes_mostrar("Antes de jugar, recuerde: ", negro, fuente_menu, 40, 300)
+            mensajes_mostrar("Presione la tecla X para lanzar los dados", negro, fuente_menu, 20, 350)
+            mensajes_mostrar(usuario1.capitalize() + " es el primero en jugar", negro, fuente_menu, 40, 450)
+            mensajes_mostrar("Presione la tecla espacio para comenzar", negro, fuente_menu, 20, 500)
+
+            for evento_2 in pygame.event.get():
+                if evento_2.type == QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif evento_2.type == pygame.KEYDOWN:
+                    if evento_2.key == pygame.K_SPACE:
+                        menu_2_computador = False
+                        interfaz_general = True
+
+            pygame.display.update()
         while interfaz_general:
 
             ventana.fill(verde)
@@ -272,6 +345,8 @@ def inicio():
                     sys.exit()
             pygame.display.update()
 
+
+
         while interfaz_usuario1:
             ventana.fill(verde)
             ventana.blit(tablero, (0, 0))
@@ -280,8 +355,7 @@ def inicio():
             mensajes_mostrar("- Dinero de " + str(usuario2).capitalize() + ": " + str(dinero_usuario_2)+"$", negro, fuente_extra, 459,658)
             mensajes_mostrar(mensaje_usuario1, negro, fuente_extra, 5,678)
             mensajes_mostrar("- Presiona la tecla Q para continuar", negro, fuente_extra, dinamica_general_x, dinamica_general_y)
-            mensajes_mostrar("- Dinero de " + str(usuario1).capitalize() + ": " + str(dinero_usuario_1), negro,fuente_extra, 5, 658)
-            mensajes_mostrar("- Dinero de " + str(usuario2).capitalize() + ": " + str(dinero_usuario_2), negro,fuente_extra, 459, 658)
+
 
             while dinamica_general_x!=300:
                 dinamica_general_x+=5
@@ -389,10 +463,13 @@ def inicio():
                                         while bucle_1:
 
                                             for evento in pygame.event.get():
-                                                if evento.type==pygame.KEYDOWN:
+                                                if evento.type == QUIT:
+                                                    pygame.quit()
+                                                    sys.exit()
+                                                elif evento.type==pygame.KEYDOWN:
                                                     if evento.key==K_s:
                                                         los_casilleros[posicion_1 - 1].comprado()
-                                                        dinero_usuario_2 -= los_casilleros[posicion_1 - 1].costo
+                                                        dinero_usuario_1 -= los_casilleros[posicion_1 - 1].costo
                                                         los_casilleros[posicion_1 - 1].pertenencia(usuario1)
                                                         print("Esta empresa " + binary_test(los_casilleros,posicion_1 - 1).nombre + " le pertenece a: " + binary_test(los_casilleros, posicion_1 - 1).pertenencia.capitalize())
                                                         mensaje_usuario1="Acabó tu turno"
@@ -413,10 +490,11 @@ def inicio():
                                         pygame.display.update()
                                         dinero_usuario_1 -= los_casilleros[posicion_1 - 1].renta
                                         dinero_usuario_2 += los_casilleros[posicion_1 - 1].renta
-                                        print("Esta propiedad es de " + los_casilleros[
-                                            posicion_2 - 1].pertenencia.capitalize())
-                                        print("Pagas renta " + usuario1)
+                                        print("Esta propiedad es de " + los_casilleros[posicion_1 - 1].pertenencia.capitalize())
+                                        print("Pagas renta " + usuario1.capitalize())
                                         print()
+
+
 
                                         dado_1 = False
 
@@ -430,7 +508,10 @@ def inicio():
                                         while bucle_1:
 
                                             for evento in pygame.event.get():
-                                                if evento.type == pygame.KEYDOWN:
+                                                if evento.type == QUIT:
+                                                    pygame.quit()
+                                                    sys.exit()
+                                                elif evento.type == pygame.KEYDOWN:
                                                     if evento.key == K_c:
                                                         pygame.display.update()
                                                         los_casilleros[posicion_1 - 1].compra_casas()
@@ -452,24 +533,29 @@ def inicio():
                                         dado_1 = False
                                         mensaje_usuario1 = "Acabó tu turno"
 
+                            pygame.display.update()
                             mensaje_usuario1="Acabó tu turno"
                             dado_1=False
 
 
 
                 pygame.display.update()
+            if dinero_usuario_1<0:
+                interfaz_usuario1=False
+                menu_game_over=True
 
             for evento in pygame.event.get():
                 if evento.type == QUIT:
                     pygame.quit()
                     sys.exit()
-                elif evento.type==pygame.KEYDOWN:
+                elif evento.type == pygame.KEYDOWN:
                     if evento.key == K_q:
-                        dado_1=True
-                        bucle_1=True
-                        dinamica_2=True
-                        mensaje_usuario1="- Lanza el dado una vez (X)"
+                        dado_1 = True
+                        bucle_1 = True
+                        dinamica_2 = True
+                        mensaje_usuario1 = "- Lanza el dado una vez (X)"
                         interfaz_usuario1 = False
+
 
 
             pygame.display.update()
@@ -486,8 +572,12 @@ def inicio():
             elif dinamica_posy==90:
                 time.sleep(2)
                 dinamica_2=False
-                interfaz_usuario2=True
-                dinamica_posy=10
+                if usuario2==computador:
+                    interfaz_computador=True
+                    dinamica_posy=10
+                else:
+                    interfaz_usuario2=True
+                    dinamica_posy=10
 
             for evento_2 in pygame.event.get():
                 if evento_2.type == QUIT:
@@ -495,13 +585,208 @@ def inicio():
                     sys.exit()
             pygame.display.update()
 
+        while interfaz_computador:
+            ventana.fill(verde)
+            ventana.blit(tablero, (0, 0))
+            ventana.blit(pieza_2, (posX_usuario2, posY_usuario2))
+            mensajes_mostrar(mensaje_usuario2,negro,fuente_extra, 5, 678)
+            mensajes_mostrar("- Presiona la tecla Q para continuar", negro, fuente_extra, dinamica_general_x,dinamica_general_y)
+            mensajes_mostrar("- Dinero de " + str(usuario1).capitalize() + ": " + str(dinero_usuario_1), negro, fuente_extra, 5, 658)
+            mensajes_mostrar("- Dinero de " + str(usuario2).capitalize() + ": " + str(dinero_usuario_2), negro, fuente_extra, 459, 658)
+
+
+            while dinamica_general_x != 300:
+                dinamica_general_x += 5
+
+            while dado_2:
+                for evento_2 in pygame.event.get():
+                    if evento_1.type == QUIT:
+                        pygame.quit()
+                        sys.exit()
+                    elif evento_2.type == pygame.KEYDOWN:
+                        if evento_2.key == pygame.K_x:
+                            segundo = dado()
+                            print("La suma de los dados de " + str(usuario2).capitalize() + " es: " + str(segundo))
+                            aux_2=posicion_2
+                            posicion_2 += segundo
+
+                            if 1<posicion_2<11 or posicion_2 == 11:
+                                while posX_usuario2!=40:
+                                    posX_usuario2-=5
+                                    pygame.display.update()
+                                if aux_2>1:
+                                    for i in range(posicion_2 - aux_2):
+                                        for j in range(11):
+                                            posY_usuario2-=5
+                                            pygame.display.update()
+                                else:
+                                    for i in range(posicion_2 - 1):
+                                        for j in range(11):
+                                            posY_usuario2 -= 5
+                                            pygame.display.update()
+                            elif 11 < posicion_2 < 21 or posicion_2 == 21:
+                                while posY_usuario2 != 30:
+                                    posY_usuario2 -= 5
+                                    pygame.display.update()
+                                if aux_2>11:
+                                    for i in range(posicion_2-aux_2):
+                                        for j in range(11):
+                                            posX_usuario2 += 5
+                                            pygame.display.update()
+                                else:
+                                    for i in range(posicion_2 - 11):
+                                        for j in range(11):
+                                            posX_usuario2 += 5
+                                            pygame.display.update()
+                            elif 21 < posicion_2 < 31 or posicion_2 == 31:
+                                while posX_usuario2 != 590:
+                                    posX_usuario2 += 5
+                                    pygame.display.update()
+                                if aux_2>21:
+                                    for i in range(posicion_2-aux_2):
+                                        for j in range(11):
+                                            posY_usuario2 += 5
+                                            pygame.display.update()
+                                else:
+                                    for i in range(posicion_2 - 21):
+                                        for j in range(11):
+                                            posY_usuario2 += 5
+                                            pygame.display.update()
+                            elif 31 < posicion_2 < 40 or posicion_2==40:
+                                while posY_usuario2 != 580:
+                                    posY_usuario2 += 5
+                                    pygame.display.update()
+                                if aux_2>31:
+                                    for i in range(posicion_2-aux_2):
+                                        for j in range(11):
+                                            posX_usuario2 -= 5
+                                            pygame.display.update()
+                                else:
+                                    for i in range(posicion_2 - 31):
+                                        for j in range(11):
+                                            posX_usuario2 -= 5
+                                            pygame.display.update()
+                            elif posicion_2 > 40:
+                                pygame.display.update()
+                                while posX_usuario2 != 40:
+                                    posX_usuario2-= 5
+                                    pygame.display.update()
+                                for i in range(posicion_2 - 41):
+                                    for j in range(11):
+                                        posY_usuario2 -= 5
+                                        pygame.display.update()
+
+                            if posicion_2 > 40:
+                                pygame.display.update()
+                                posicion_2 -= 40
+                                dinero_usuario_2 += 200
+                                vuelta_usuario2=1
+
+
+                            print("La posición de " + usuario2.capitalize() + " " + "es " + str(posicion_2))
+                            print()
+                            pygame.display.update()
+
+                            if vuelta_usuario2 == 1:
+                                pygame.display.update()
+                                if posicion_2 not in lista_no_deseada:
+                                    pygame.display.update()
+
+                                    if binary_test(los_casilleros, posicion_2 - 1).estado == False:
+                                        pygame.display.update()
+
+                                        print("La empresa "+los_casilleros[posicion_2 - 1].nombre+"puede ser comprada.")
+                                        print("El costo es "+str(los_casilleros[posicion_2 - 1].costo)+" ¿Quieres Comprarlo? ¿Si o No?")
+                                        print("Presiona 'S' para comprar")
+                                        print("Presiona 'N' para rechazar")
+
+                                        if random.choice(opcion)=="Si":
+                                            pygame.display.update()
+                                            los_casilleros[posicion_2 - 1].comprado()
+                                            dinero_usuario_2 -= los_casilleros[posicion_2 - 1].costo
+                                            los_casilleros[posicion_2 - 1].pertenencia(usuario2)
+                                            print("Esta empresa " + binary_test(los_casilleros,posicion_2 - 1).nombre + " le pertenece a: " + binary_test(los_casilleros, posicion_2 - 1).pertenencia.capitalize())
+                                            mensaje_usuario2 = "Acabó tu turno"
+                                            dado_2 = False
+
+
+                                        else:
+                                            pygame.display.update()
+                                            mensaje_usuario2 = "Acabó tu turno"
+                                            dado_2 = False
+
+
+                                            pygame.display.update()
+
+                                    elif los_casilleros[posicion_2 - 1].pertenencia==usuario1:
+                                        pygame.display.update()
+                                        dinero_usuario_2 -= los_casilleros[posicion_2 - 1].renta
+                                        dinero_usuario_1 += los_casilleros[posicion_2 - 1].renta
+                                        print("Esta propiedad es de " + los_casilleros[posicion_2 - 1].pertenencia.capitalize())
+                                        print("Pagas renta " + usuario2)
+                                        print()
+
+                                        dado_2 = False
+
+                                    elif los_casilleros[posicion_2 - 1].pertenencia==usuario2:
+                                        pygame.display.update()
+
+                                        print("¿Quieres comprar casas u hotel?")
+                                        print("Presion C para comprar casas")
+                                        print("Presion H para comprar hoteles")
+
+                                        if random.choice(opcion) == "Si":
+                                            pygame.display.update()
+                                            los_casilleros[posicion_2 - 1].comprado()
+                                            dinero_usuario_2 -= los_casilleros[posicion_2 - 1].costo
+                                            los_casilleros[posicion_2 - 1].pertenencia(usuario2)
+                                            print("Esta empresa " + binary_test(los_casilleros,posicion_2 - 1).nombre + " le pertenece a: " + binary_test(los_casilleros, posicion_2 - 1).pertenencia.capitalize())
+                                            mensaje_usuario2 = "Acabó tu turno"
+                                            dado_2 = False
+
+
+                                        else:
+                                            pygame.display.update()
+                                            print("La computadora no lo compró")
+                                            mensaje_usuario2 = "Acabó tu turno"
+                                            dado_2 = False
+
+
+                                            pygame.display.update()
+                                else:
+                                    dado_2=False
+                                    mensaje_usuario2 = "Acabó tu turno"
+                            mensaje_usuario2="Acabó tu turno"
+                            dado_2=False
+                pygame.display.update()
+
+            pygame.display.update()
+            
+            if dinero_usuario_2<0:
+                interfaz_usuario2=False
+                menu_game_over=True
+
+            for evento_1 in pygame.event.get():
+                if evento_1.type == QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+            if dado_2==False:
+                pygame.display.update()
+                time.sleep(2)
+                dinamica_1 = True
+                mensaje_usuario2 = "- Lanza el dado una vez (X)"
+                dado_2 = True
+                interfaz_computador = False
+
+
+            pygame.display.update()
         while interfaz_usuario2:
             ventana.fill(verde)
             ventana.blit(tablero, (0, 0))
             ventana.blit(pieza_2, (posX_usuario2, posY_usuario2))
-            mensajes_mostrar("- Dinero de " + str(usuario1).capitalize() + ": " + str(dinero_usuario_1)+"$", negro, fuente_extra, 5, 658)
-            mensajes_mostrar("- Dinero de " + str(usuario2).capitalize() + ": " + str(dinero_usuario_2)+"$", negro, fuente_extra, 459, 658)
-            mensajes_mostrar(mensaje_usuario2, negro, fuente_extra, 5, 678)
+
+            mensajes_mostrar( mensaje_usuario2,negro,fuente_extra, 5, 678)
             mensajes_mostrar("- Presiona la tecla Q para continuar", negro, fuente_extra, dinamica_general_x,dinamica_general_y)
             mensajes_mostrar("- Dinero de " + str(usuario1).capitalize() + ": " + str(dinero_usuario_1), negro, fuente_extra, 5, 658)
             mensajes_mostrar("- Dinero de " + str(usuario2).capitalize() + ": " + str(dinero_usuario_2), negro, fuente_extra, 459, 658)
@@ -616,7 +901,10 @@ def inicio():
                                         while bucle_2:
 
                                             for evento in pygame.event.get():
-                                                if evento.type==pygame.KEYDOWN:
+                                                if evento.type == QUIT:
+                                                    pygame.quit()
+                                                    sys.exit()
+                                                elif evento.type==pygame.KEYDOWN:
                                                     if evento.key==K_s:
                                                         pygame.display.update()
                                                         los_casilleros[posicion_2 - 1].comprado()
@@ -654,7 +942,10 @@ def inicio():
                                         while bucle_2:
 
                                             for evento in pygame.event.get():
-                                                if evento.type==pygame.KEYDOWN:
+                                                if evento.type == QUIT:
+                                                    pygame.quit()
+                                                    sys.exit()
+                                                elif evento.type==pygame.KEYDOWN:
                                                     if evento.key==K_c:
                                                         pygame.display.update()
                                                         los_casilleros[posicion_2 - 1].compra_casas()
@@ -679,21 +970,74 @@ def inicio():
                             dado_2=False
                 pygame.display.update()
 
+            if dinero_usuario_2 < 0:
+                interfaz_usuario2 = False
+                menu_game_over = True
 
             for evento_1 in pygame.event.get():
                 if evento_1.type == QUIT:
                     pygame.quit()
                     sys.exit()
-                elif evento_1.type==pygame.KEYDOWN:
+                elif evento_1.type == pygame.KEYDOWN:
                     if evento_1.key == K_q:
-                        dado_2=True
-                        bucle_2=True
+                        dado_2 = True
+                        bucle_2 = True
                         dinamica_1 = True
-                        mensaje_usuario2="- Lanza el dado una vez (X)"
+                        mensaje_usuario2 = "- Lanza el dado una vez (X)"
                         interfaz_usuario2 = False
+
 
 
             pygame.display.update()
 
+        while menu_game_over:
+            ventana.fill(verde)
+            mensajes_mostrar("Game Over", negro, fuente_menu, 20, 150)
+            pygame.display.update()
 
+            while dinero_usuario_2>0 and dinero_usuario_1<0:
+                mensajes_mostrar("El ganador es: "+usuario2.capitalize(), negro, fuente_menu, 20, 150)
+                mensajes_mostrar("Presiona 'W' para seguir jugando", negro, fuente_menu, 20, 200)
+                mensajes_mostrar("Presiona 'P' para salir", negro, fuente_menu, 20, 200)
+                for evento_2 in pygame.event.get():
+                    if evento_2.type == QUIT:
+                        pygame.quit()
+                        sys.exit()
+                    elif evento_2.type == pygame.KEYDOWN:
+                        if evento_2.key == pygame.K_p:
+                            pygame.quit()
+                            sys.exit()
+                        elif evento_2.key==pygame.K_w:
+                            dinero_usuario_2=1500
+                            dinero_usuario_1=1500
+                            mini_bucle = True
+                            menu=True
+                            menu_game_over=False
+                pygame.display.update()
+            while dinero_usuario_1>0 and dinero_usuario_2<0:
+                mensajes_mostrar("El ganador es: "+usuario1.capitalize(), negro, fuente_menu, 20, 150)
+                mensajes_mostrar("Presiona 'W' para seguir jugando", negro, fuente_menu, 20, 200)
+                mensajes_mostrar("Presiona 'P' para salir", negro, fuente_menu, 20, 200)
+                for evento_2 in pygame.event.get():
+                    if evento_2.type == QUIT:
+                        pygame.quit()
+                        sys.exit()
+                    elif evento_2.type == pygame.KEYDOWN:
+                        if evento_2.key == pygame.K_p:
+                            pygame.quit()
+                            sys.exit()
+                        elif evento_2.key==pygame.K_w:
+                            dinero_usuario_2=1500
+                            dinero_usuario_1=1500
+                            mini_bucle = True
+                            menu=True
+                            menu_game_over=False
+                pygame.display.update()
 
+            for evento_2 in pygame.event.get():
+                if evento_2.type == QUIT:
+                    pygame.quit()
+                    sys.exit()
+            pygame.display.update()
+
+inicio()
