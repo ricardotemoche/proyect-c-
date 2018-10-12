@@ -3,7 +3,9 @@
 #include <cstring>
 #include <cstdlib>
 #include <conio.h>
+#include <ctype.h>
 using namespace std;
+
 const char DATOS[] = "datos_agenda.dat";
 
 struct Persona{
@@ -11,7 +13,8 @@ struct Persona{
     char apell[50];
     int edad;
     char email[50];
-};
+    char numero[9];
+}; 
 
 // FUNCIONES DE LA AGENDA
 void ingresar(Persona x);
@@ -22,7 +25,8 @@ void mostrar(Persona x);
 void listar();
 void eliminar(char nombre[],char apell[]);
 void actualizar(char nombre[],char apell[]);
-
+int contadorAgenda();
+bool verificador(string op);
 
 // FUNCIONES PARA EL MENU 
 void ingresar();
@@ -32,7 +36,7 @@ void borrar();
 void actualizar();
 
 int main(){
-    int menu;
+    string menu;
     do{
         system("cls");
         cout<<"\t\t\t\t\tAGENDA"<<endl;
@@ -45,8 +49,9 @@ int main(){
         cout<<"\t\t\tIngrese una opcion ->:";
         cin>>menu;
         cin.ignore();
-        switch(menu){
-            case 1 : system("cls");
+        if(verificador(menu)){
+		switch(atoi(menu.c_str())){
+            case 1 : system("cls"); 
                      ingresar();
                      break;
             case 2 : system("cls");
@@ -61,10 +66,9 @@ int main(){
             case 5 : system("cls");
                      actualizar();
                      break;
-            case 6 : break;
-            default: cout<<"\t\t\tOpcion incorrecta"<<endl;
-        }
-    }while(menu!=6);
+            case 6 : break;}}
+         else { cout<<"\t\t\tOpcion incorrecta"<<endl; getch();} 
+    }while(atoi(menu.c_str())!=6);
     return 0;
 }
 
@@ -83,7 +87,7 @@ Persona leer(){
     cin.getline(x.apell,50);
     cout<<"\t\t\tEDAD     : ";
     cin>>x.edad;
-    cin.ignore();
+    cin.ignore(); 
     cout<<"\t\t\tCORREO   : ";
     cin.getline(x.email,45);
     return x;
@@ -95,7 +99,7 @@ bool existe(char nombre[],char apell[]){
     entrada.open(DATOS,ios::binary);
     if(entrada.good()){
         while(entrada.read((char*)&x,sizeof(Persona))){
-            /**strcmp -> string comparison -> comparacion de cadenas**/
+            strcmp(nombre,x.nombre);
             if(strcmp(nombre,x.nombre)==0 && strcmp(apell,x.apell)==0){
                 entrada.close();
                 return true;
@@ -134,6 +138,19 @@ void mostrar(Persona x){
     cout<<endl;
 }
 
+int contadorAgenda(){ 
+	ifstream entrada;
+	    entrada.open(DATOS,ios::binary);
+	    Persona x;
+	    int contador=0;
+	    if(entrada.good()){
+	        while(entrada.read((char*)&x,sizeof(Persona))){
+	            contador++;
+	        }}
+	    return contador;
+}
+
+
 void listar(){
     ifstream entrada;
     entrada.open(DATOS,ios::binary);
@@ -141,7 +158,7 @@ void listar(){
     if(entrada.good()){
         while(entrada.read((char*)&x,sizeof(Persona))){
             mostrar(x);
-        }
+            } 
 
     }
     else{
@@ -167,7 +184,7 @@ void eliminar(char nombre[],char apell[]){
     entrada.close();
     temporal.close();
     remove(DATOS);
-    rename("datos_agenda.dat",DATOS);
+    rename("temporal.dat",DATOS);
 }
 
 void actualizar(char nombre[],char apell[]){
@@ -198,7 +215,8 @@ void ingresar(){
     cout<<"\t\t\t\tINGRESO DE NUEVO CONTACTO"<<endl;
     Persona nuevo = leer();
     ingresar(nuevo);
-    cout<<"\t\t\tContacto agregado con exito"<<endl;
+    cout<<"\t\t\t    ****Contacto agregado con exito****"<<endl;
+    getch();
 }
 
 void buscar(){
@@ -221,7 +239,7 @@ void buscar(){
 }
 
 void listado(){
-    cout<<"\t\t\t\tLISTA DE CONTACTOS"<<endl;
+    cout<<"\t\t\t\tLISTA DE CONTACTOS ("<<contadorAgenda()<<")"<<endl;
     listar();
     getch();
 }
@@ -256,6 +274,7 @@ void borrar(){
         cout<<"\t\t\tNO EXISTE EL CONTACTO"<<endl;
     }
 }
+
 void actualizar(){
     cout<<"\t\t\t\tACTUALIZAR CONTACTO"<<endl;
     char nombre[40],apell[50];
@@ -274,4 +293,13 @@ void actualizar(){
     else{
         cout<<"\t\t\tNO EXISTE EL CONTACTO"<<endl;
     }
+}
+
+bool verificador(string op){
+    for (int i = 0; i < op.length(); i++)
+    {
+        if(!isdigit(op[i]) ) {
+            return false;
+        }
+    } return true;
 }
