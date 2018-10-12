@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <conio.h>
 using namespace std;
+
 const char DATOS[] = "datos_agenda.dat";
 
 struct Persona{
@@ -11,7 +12,7 @@ struct Persona{
     char apell[50];
     int edad;
     char email[50];
-};
+}; 
 
 // FUNCIONES DE LA AGENDA
 void ingresar(Persona x);
@@ -46,7 +47,7 @@ int main(){
         cin>>menu;
         cin.ignore();
         switch(menu){
-            case 1 : system("cls");
+            case 1 : system("cls"); 
                      ingresar();
                      break;
             case 2 : system("cls");
@@ -95,7 +96,7 @@ bool existe(char nombre[],char apell[]){
     entrada.open(DATOS,ios::binary);
     if(entrada.good()){
         while(entrada.read((char*)&x,sizeof(Persona))){
-            /**strcmp -> string comparison -> comparacion de cadenas**/
+            strcmp(nombre,x.nombre)
             if(strcmp(nombre,x.nombre)==0 && strcmp(apell,x.apell)==0){
                 entrada.close();
                 return true;
@@ -167,7 +168,7 @@ void eliminar(char nombre[],char apell[]){
     entrada.close();
     temporal.close();
     remove(DATOS);
-    rename("datos_agenda.dat",DATOS);
+    rename("temporal.dat",DATOS);
 }
 
 void actualizar(char nombre[],char apell[]){
