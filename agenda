@@ -4,42 +4,35 @@
 #include <cstdlib>
 #include <conio.h>
 using namespace std;
-const char DIR_ARCHIVO[] = "contactos.dat";
+const char DATOS[] = "datos_agenda.dat";
 
-struct Contacto{
-    char nombre[30];
-    char apellido[45];
+struct Persona{
+    char nombre[40];
+    char apell[50];
     int edad;
-    char correo[45];
+    char email[50];
 };
-/*********** FUNCIONES DEL PROGRAMA ****************/
-void ingresarContacto(Contacto c);
-Contacto leerContacto();
-bool existeContacto(char nombre[],char apellido[]);
-Contacto buscarContacto(char nombre[],char apellido[]);
-void mostrarContacto(Contacto c);
-void listarContactos();
-void eliminarContacto(char nombre[],char apellido[]);
-void actualizarContacto(char nombre[],char apellido[]);
-/***************************************************/
+
+// FUNCIONES DE LA AGENDA
+void ingresar(Persona x);
+Persona leer();
+bool existe(char nombre[],char apell[]);
+Persona buscar(char nombre[],char apell[]);
+void mostrar(Persona x);
+void listar();
+void eliminar(char nombre[],char apell[]);
+void actualizar(char nombre[],char apell[]);
 
 
-/*********** FUNCIONES PARA EL MENU ****************/
-void menuIngresar();
-void menuBuscar();
-void menuListado();
-void menuEliminar();
-void menuActualizar();
-/***************************************************/
+// FUNCIONES PARA EL MENU 
+void ingresar();
+void buscar();
+void listado();
+void borrar();
+void actualizar();
+
 int main(){
-    /*****  AGENDA    *****/
-    /** Ingresar Contacto
-        Buscar un Contacto
-        Ver listado de Contactos
-        Eliminar un contacto
-        Actualizar un Contacto
-    **/
-    int op;
+    int menu;
     do{
         system("cls");
         cout<<"\t\t\t\t\tAGENDA"<<endl;
@@ -50,61 +43,60 @@ int main(){
         cout<<"\t\t\tActualizar contacto..........[5]"<<endl;
         cout<<"\t\t\tSALIR........................[6]"<<endl;
         cout<<"\t\t\tIngrese una opcion ->:";
-        cin>>op;
+        cin>>menu;
         cin.ignore();
-        switch(op){
-            case 1 : system("cls");/** CLean Screen **/
-                     menuIngresar();
+        switch(menu){
+            case 1 : system("cls");
+                     ingresar();
                      break;
             case 2 : system("cls");
-                     menuBuscar();
+                     buscar();
                      break;
             case 3 : system("cls");
-                     menuListado();
+                     listado();
                      break;
             case 4 : system("cls");
-                     menuEliminar();
+                     borrar();
                      break;
             case 5 : system("cls");
-                     menuActualizar();
+                     actualizar();
                      break;
             case 6 : break;
             default: cout<<"\t\t\tOpcion incorrecta"<<endl;
         }
-    }while(op!=6);
+    }while(menu!=6);
     return 0;
 }
 
-void ingresarContacto(Contacto c){
+void ingresar(Persona x){
     ofstream salida;
-    /**/
-    salida.open(DIR_ARCHIVO,ios::binary | ios::app);
-    salida.write((char*)&c,sizeof(Contacto));
+    salida.open(DATOS, ios::binary | ios::app);
+    salida.write((char*)&x,sizeof(Persona));
     salida.close();
 }
 
-Contacto leerContacto(){
-    Contacto c;
+Persona leer(){
+    Persona x;
     cout<<"\t\t\tNOMBRE   : ";
-    cin.getline(c.nombre,30);
+    cin.getline(x.nombre,40);
     cout<<"\t\t\tAPELLIDO : ";
-    cin.getline(c.apellido,45);
+    cin.getline(x.apell,50);
     cout<<"\t\t\tEDAD     : ";
-    cin>>c.edad;
+    cin>>x.edad;
     cin.ignore();
     cout<<"\t\t\tCORREO   : ";
-    cin.getline(c.correo,45);
-    return c;
+    cin.getline(x.email,45);
+    return x;
 }
 
-bool existeContacto(char nombre[],char apellido[]){
-    Contacto c;
+bool existe(char nombre[],char apell[]){
+    Persona x;
     ifstream entrada;
-    entrada.open(DIR_ARCHIVO,ios::binary);
+    entrada.open(DATOS,ios::binary);
     if(entrada.good()){
-        while(entrada.read((char*)&c,sizeof(Contacto))){
+        while(entrada.read((char*)&x,sizeof(Persona))){
             /**strcmp -> string comparison -> comparacion de cadenas**/
-            if(strcmp(nombre,c.nombre)==0 && strcmp(apellido,c.apellido)==0){
+            if(strcmp(nombre,x.nombre)==0 && strcmp(apell,x.apell)==0){
                 entrada.close();
                 return true;
             }
@@ -118,36 +110,37 @@ bool existeContacto(char nombre[],char apellido[]){
     }
 }
 
-Contacto buscarContacto(char nombre[],char apellido[]){
-    Contacto c;
+Persona buscar(char nombre[],char apell[]){
+    Persona x;
     ifstream entrada;
-    entrada.open(DIR_ARCHIVO,ios::binary);
-    if(entrada.good()){
-        while(entrada.read((char*)&c,sizeof(Contacto))){
-            /**strcmp -> string comparison -> comparacion de cadenas**/
-            if(strcmp(nombre,c.nombre)==0 && strcmp(apellido,c.apellido)==0){
-                entrada.close();
-                return c;
+    entrada.open(DATOS,ios::binary);
+    
+	if(entrada.good()){
+        while(entrada.read((char*)&x,sizeof(Persona))){
+            if(strcmp(nombre,x.nombre)==0 && strcmp(apell,x.apell)==0){
+				entrada.close();
+                return x;
             }
         }
     }
 }
-void mostrarContacto(Contacto c){
+
+void mostrar(Persona x){
     cout<<endl;
-    cout<<"\t\t\t NOMBRE   : "<<c.nombre<<endl;
-    cout<<"\t\t\t APELLIDO : "<<c.apellido<<endl;
-    cout<<"\t\t\t EDAD     : "<<c.edad<<endl;
-    cout<<"\t\t\t CORREO   : "<<c.correo<<endl;
+    cout<<"\t\t\t NOMBRE   : "<<x.nombre<<endl;
+    cout<<"\t\t\t APELLIDO : "<<x.apell<<endl;
+    cout<<"\t\t\t EDAD     : "<<x.edad<<endl;
+    cout<<"\t\t\t CORREO   : "<<x.email<<endl;
     cout<<endl;
 }
 
-void listarContactos(){
+void listar(){
     ifstream entrada;
-    entrada.open(DIR_ARCHIVO,ios::binary);
-    Contacto c;
+    entrada.open(DATOS,ios::binary);
+    Persona x;
     if(entrada.good()){
-        while(entrada.read((char*)&c,sizeof(Contacto))){
-            mostrarContacto(c);
+        while(entrada.read((char*)&x,sizeof(Persona))){
+            mostrar(x);
         }
 
     }
@@ -157,132 +150,125 @@ void listarContactos(){
     entrada.close();
 }
 
-void eliminarContacto(char nombre[],char apellido[]){
-    /**
-        contactos.dat
-        |
-         REGISTRO2
-    **/
+void eliminar(char nombre[],char apell[]){
+    
     ifstream entrada;
     ofstream temporal;
-    entrada.open(DIR_ARCHIVO,ios::binary);
-    temporal.open("temp.dat",ios::binary);
-    Contacto c;
+    entrada.open(DATOS,ios::binary);
+    temporal.open("temporal.dat",ios::binary);
+    Persona x;
     if(entrada.good()){
-        while(entrada.read((char*)&c,sizeof(Contacto))){
-            if(strcmp(nombre,c.nombre)!=0 || strcmp(apellido,c.apellido)!=0){
-                temporal.write((char*)&c,sizeof(Contacto));
+        while(entrada.read((char*)&x,sizeof(Persona))){
+            if(strcmp(nombre,x.nombre)!=0 || strcmp(apell,x.apell)!=0){
+                temporal.write((char*)&x,sizeof(Persona));
             }
         }
     }
     entrada.close();
     temporal.close();
-    remove(DIR_ARCHIVO);
-    rename("temp.dat",DIR_ARCHIVO);
+    remove(DATOS);
+    rename("datos_agenda.dat",DATOS);
 }
 
-void actualizarContacto(char nombre[],char apellido[]){
-    /**
-        contactos.dat                                   |
-         REGISTRO1REGISTRO2REGISTRO3
-        temp.dat                                   |
-         REGISTRO1REGISTRONREGISTRO3
-    **/
+void actualizar(char nombre[],char apell[]){
+   
     ifstream entrada;
     ofstream temporal;
-    entrada.open(DIR_ARCHIVO,ios::binary);
-    temporal.open("temp.dat",ios::binary);
-    Contacto c;
+    entrada.open(DATOS,ios::binary);
+    temporal.open("temporal.dat",ios::binary);
+    Persona x;
     if(entrada.good()){
-        while(entrada.read((char*)&c,sizeof(Contacto))){
-            if(strcmp(nombre,c.nombre)==0 && strcmp(apellido,c.apellido)==0){
-                Contacto actualizado = leerContacto();
-                temporal.write((char*)&actualizado,sizeof(Contacto));
+        while(entrada.read((char*)&x,sizeof(Persona))){
+            if(strcmp(nombre,x.nombre)==0 && strcmp(apell,x.apell)==0){
+                Persona actualizado = leer();
+                temporal.write((char*)&actualizado,sizeof(actualizado));
             }
             else{
-                temporal.write((char*)&c,sizeof(Contacto));
+                temporal.write((char*)&x,sizeof(Persona));
             }
         }
     }
     entrada.close();
     temporal.close();
-    remove(DIR_ARCHIVO);
-    rename("temp.dat",DIR_ARCHIVO);
+    remove(DATOS);
+    rename("temporal.dat",DATOS);
 }
 
-/******************************/
-void menuIngresar(){
+void ingresar(){
     cout<<"\t\t\t\tINGRESO DE NUEVO CONTACTO"<<endl;
-    Contacto nuevo = leerContacto();
-    ingresarContacto(nuevo);
+    Persona nuevo = leer();
+    ingresar(nuevo);
     cout<<"\t\t\tContacto agregado con exito"<<endl;
 }
 
-void menuBuscar(){
+void buscar(){
     cout<<"\t\t\t\tBUSCAR CONTACTO"<<endl;
-    char nombre[30],apellido[45];
+    char nombre[30],apell[50];
     cout<<"\t\t\tIngrese los datos de busqueda:"<<endl;
     cout<<"\t\t\tNOMBRE   : ";
     cin.getline(nombre,30);
     cout<<"\t\t\tAPELLIDO: ";
-    cin.getline(apellido,45);
-    if(existeContacto(nombre,apellido)){
-        Contacto buscado = buscarContacto(nombre,apellido);
-        mostrarContacto(buscado);
+    cin.getline(apell,50);
+    if(existe(nombre,apell)){
+        Persona buscado = buscar(nombre,apell);
+        mostrar(buscado);
+        getch();
     }
     else{
         cout<<"\t\t\tNO se encuentra ese contacto"<<endl;
+        getch();
     }
 }
 
-void menuListado(){
+void listado(){
     cout<<"\t\t\t\tLISTA DE CONTACTOS"<<endl;
-    listarContactos();
-    getch();/**obtener caracter**/
+    listar();
+    getch();
 }
 
-void menuEliminar(){
-    cout<<"\t\t\t\tELIMINAR CONTACTO"<<endl;
-    char nombre[30],apellido[45];
+void borrar(){
+    cout<<"\t\t\t\tELIMINAR CONTACTO"<<endl; 	             	
+    char nombre[40],apell[50];
     cout<<"\t\t\tIngrese los datos de eliminacion:"<<endl;
     cout<<"\t\t\tNOMBRE   : ";
-    cin.getline(nombre,30);
+    cin.getline(nombre,40);
     cout<<"\t\t\tAPELLIDO: ";
-    cin.getline(apellido,45);
-    if(existeContacto(nombre,apellido)){
-        Contacto eliminar = buscarContacto(nombre,apellido);
-        int op;
+    cin.getline(apell,50);
+    
+	if(existe(nombre,apell)){
+        Persona eliminado = buscar(nombre,apell);
+        int operacion;
         cout<<"\t\t\tSeguro que desea eliminar el siguiente contacto?";
-        mostrarContacto(eliminar);
+        mostrar(eliminado);
         do{
             cout<<"\t\t\tSI[1]....NO[2]:";
-            cin>>op;
-            switch(op){
-                case 1: eliminarContacto(nombre,apellido);
+            cin>>operacion;
+            switch(operacion){
+                case 1: eliminar(nombre,apell);
                         cout<<"\t\t\tContacto eliminado con exito"<<endl;
                         break;
                 case 2: break;
                 default: cout<<"\t\t\tOPCION INCORRECTA"<<endl;
             }
-        }while(op!=1 && op!=2);
+        }while(operacion!=1 && operacion!=2);
     }
     else{
         cout<<"\t\t\tNO EXISTE EL CONTACTO"<<endl;
     }
 }
-void menuActualizar(){
+void actualizar(){
     cout<<"\t\t\t\tACTUALIZAR CONTACTO"<<endl;
-    char nombre[30],apellido[45];
+    char nombre[40],apell[50];
     cout<<"\t\t\tIngrese los datos de modificacion:"<<endl;
     cout<<"\t\t\tNOMBRE   : ";
     cin.getline(nombre,30);
     cout<<"\t\t\tAPELLIDO: ";
-    cin.getline(apellido,45);
-    if(existeContacto(nombre,apellido)){
-        Contacto buscado = buscarContacto(nombre,apellido);
+    cin.getline(apell,50);
+    if(existe(nombre,apell)){
+        Persona buscado = buscar(nombre,apell);
         cout<<"\t\t\tRegistro a modificar:"<<endl;
-        mostrarContacto(buscado);
-        actualizarContacto(nombre,apellido);
+        mostrar(buscado);
+        actualizar(nombre,apell);
         cout<<"\t\t\tSE ACTUALIZO EL REGISTRO"<<endl;
     }
     else{
